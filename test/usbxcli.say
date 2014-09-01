@@ -1,0 +1,46 @@
+(load "builtin.pys")
+(load "profile.pys")
+
+
+(define sbxgrps
+ (index
+  (eval 
+   ((dot (usbxcli ddan_1 "sbxgrp-list") "replace") "false" "False"))
+  "SandboxGroup"))
+
+(define demo
+ (lambda ()
+  (usbxcli ddan_1 "sys-stop")
+  (map
+   (lambda (d) 
+    (define sbxid (index d "ID"))
+    (cond 
+     ((= "89A0F7C070BCB031" sbxid)
+      (usbxcli ddan_1 (+ "sbxgrp-activate --id " sbxid " --enable")))
+     (else (usbxcli ddan_1 (+ "sbxgrp-activate --id " sbxid " --disable")))))
+   sbxgrps)
+  (usbxcli ddan_1 "sys-start")))
+
+(map 
+ (lambda (m) 
+  (display m)
+  (display (usbx_version m)))
+ all_ddan)
+
+(execute ddan_1 "!~{(usandbox (data \"process\") \"info\")}~")
+
+(usbxcli ddan_1 "op-submitsample /bin/ls")
+(define taskid (submit_sample ddan_1 "/bin/ls"))
+(get_task_status ddan_1 taskid)
+
+(loop 
+ (lambda ()
+  (define status (get_task_status ddan_1 taskid))
+  (< (index status "Status") 100))
+ (lambda () 
+  (sleep 1)
+  (display (index (get_task_status ddan_1 taskid) "Status"))
+  (display "waiting...")))
+
+(usbxcli ddan_1 "op-submitsample /bin/lss")
+(execute ddan_1 "x")

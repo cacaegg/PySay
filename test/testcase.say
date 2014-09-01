@@ -1,0 +1,44 @@
+(load "profile.pys")
+
+(define TestCase
+ (lambda (iden desc sample validators)
+   (define run
+    (lambda (target)
+       (display (+ "Verifying " (index iden 1)))
+       (define taskid (submit_sample target (index sample 1)))
+       (loop 
+        (lambda ()
+         (define status (get_task_status target taskid))
+         (< (index status "Status") 100))
+        (lambda () 
+         (sleep 1)))
+       (cond 
+        (((index validators 0) (get_task_status target taskid)) "PASS")
+        (else "FAIL"))))
+   run))
+
+
+(define Id 
+ (lambda (iden)
+  (data "ID" iden)))
+
+(define Description
+ (lambda (desc)
+  (data "Description" desc)))
+
+(define Sample
+ (lambda (s_type s_data)
+  (data s_type s_data)))
+
+(define Validators data)
+
+(define ReportValidator 
+ (lambda (risklevel)
+  (lambda (status)
+   (= (index status "RiskLevel") 
+      (index risklevel 1)))))
+
+(define RiskLevel
+ (lambda (risklevel)
+  (data "RiskLevel" risklevel)))
+

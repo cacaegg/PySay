@@ -1,0 +1,3 @@
+#!/bin/sh
+
+cat - | racket translator/translator.rkt | python waiter.py vip

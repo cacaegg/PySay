@@ -1,0 +1,28 @@
+(define ddan (machine "172.22.0.54" 5566))
+(define mac_mini (machine "172.31.0.23" 5566))
+
+(connect ddan)
+(connect mac_mini)
+
+(execute ddan "'testcode'")
+
+(execute ddan "!~{(sum [data 1 2])}~")
+
+(execute ddan "!~{(file_to_string \"test/test.txt\")}~")
+
+(execute ddan "!~{(string_to_file \"okokla\\\\\\\\n\" \"/tmp/okla.txt\")}~")
+
+(define binls (file_to_string "/bin/ls" "rb" True))
+
+(execute ddan "!~{(string_to_file ,binls \"/tmp/myls\")}~")
+
+(string_to_file
+ (execute ddan "!~{(file_to_string \"/bin/ls\" \"rb\")}~")
+ "/tmp/ddanls" "wb" True)
+
+(vmstatus [data "cpu"])
+
+(vmstatus [data "memory"])
+
+(execute ddan "!~{(vmstatus [data \"cpu\" \"memory\"])}~")
+(execute mac_mini "!~{(index (vmstatus (data \"cpu\")) \"cpu\")}~")

@@ -1,0 +1,30 @@
+(load "test/config.pys")
+
+(file_to_string "test/test.txt")
+
+(file_to_string "test/test.zip" "rb" True)
+
+(connect ddi)
+
+(define filepush
+ (lambda
+  [target filename path]
+  (define filestr
+   (file_to_string filename "rb" True))
+  (execute target "!~{(string_to_file ,filestr ,path \"wb\" True)}~")))
+
+(filepush ddi "test/test.txt" "/tmp/hihi.txt")
+
+(filepush ddi "test/test.zip" "/tmp/hihi.zip")
+
+(define filepull
+ (lambda
+  [target filename path]
+  (define filestr
+   (execute target
+    "!~{(file_to_string ,filename \"rb\")}~"))
+  (string_to_file filestr path "wb" True)))
+
+(filepull ddi "/tmp/hihi.txt" "/tmp/okok.txt")
+
+(filepull ddi "/tmp/hihi.zip" "/tmp/okok.zip")

@@ -1,0 +1,35 @@
+(define first (lambda (seq) (index seq 0)))
+(define rest (lambda (seq) (slice seq 1)))
+
+(define is_iterable (lambda (e) (in "__iter__" (dir e))))
+
+(define map
+ (lambda (func (** seq))
+  (define extractor
+   (lambda (f ls result)
+    (cond 
+     ((= (len ls) 0) result)
+     (else
+      (begin
+       ((dot result "append") (apply f (data (first ls))))
+       (extractor f (rest ls) result))))))
+  (define maploop
+   (lambda (result remains)
+    (cond 
+     ((= (len (first remains)) 0) result)
+     (else 
+      (begin 
+       (define extracted (extractor first remains (data)))
+       ((dot result "append") 
+        (apply func (data (** extracted))))
+       (maploop result (extractor rest remains (data))))))))
+  (maploop (data) seq)))
+
+(define loop
+ (lambda (can_i_terminate func)
+  (cond 
+   ((can_i_terminate) 
+    (begin
+     (func)
+     (loop can_i_terminate func)))
+   (else None))))

@@ -1,0 +1,44 @@
+12
+
+True
+
+"test-string"
+
+None
+
+[data 1 2 3 4]
+
+(sum [data 1 2 3])
+
+(sum [data 1 (sum [data 2 3 4])])
+
+(max [data 1 2 3 2 7 1 2])
+
+(+ 1 2 3)
+
+(+ "Jes' " "fine")
+
+(index [data "my" "funny" "valentine" "day"] 2)
+
+(slice [data "my" "funny" "valentine" "day"] 1)
+
+(index (slice [data "my" "funny" "valentine" "day"] 1) 1)
+
+(slice [data "my" "funny" "valentine" "day"] None -1)
+
+(slice [data "my" "funny" "valentine" "day"] None None 2)
+
+(slice [data "my" "funny" "valentine" "day"] 10 0 -2)
+
+(slice [data "my" "funny" "valentine" "day"] 1 4 2)
+
+(slice [data "my" "funny" "valentine" "day"] None None -1)
+
+((dot "i'm going to upper" "upper"))
+
+(define now (dot (dot datetime "datetime") "now))
+(define before (now))
+(define after (now))
+(- after before)
+
+[1 2 3 keroro 4]

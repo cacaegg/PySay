@@ -1,0 +1,41 @@
+(load "builtin.pys")
+(define ddan_0 (machine "172.22.0.27" 5566 "3.62"))
+(define ddan_1 (machine "172.22.0.54" 5566 "3.7"))
+(connect ddan_0)
+(connect ddan_1)
+(define all_ddan (data ddan_0 ddan_1))
+
+(define filepush
+ (lambda
+  [target filename path]
+  (define filestr
+   (file_to_string filename "rb" True))
+  (execute target "!~{(string_to_file ,filestr ,path \"wb\" True)}~")))
+
+(define usbxcli
+ (lambda (target_machine cmd)
+  (index (eval (execute target_machine "!~{(usandbox (data \"cli\") ,cmd)}~")) "cli")))
+
+(define submit_sample
+ (lambda (target_machine path)
+  (define filename (+ "/tmp/" (basename path)))
+  (define cmd (+ "op-submitsample " filename))
+
+  (filepush target_machine path filename)
+  (usbxcli target_machine "op-submitsample /bin/ls")
+  (define result (eval (execute target_machine "!~{(usandbox (data \"cli\") ,cmd)}~")))
+  
+  (define taskid (index ((dot (index result "cli") "split") ":") 1))
+  (eval ((dot taskid "strip")))))
+
+(define get_task_status
+ (lambda (target_machine taskid)
+  (index 
+   (index (eval (usbxcli target_machine (+ "op-getstatus --id " (str taskid))) ) "Tasks")
+   0)))
+
+(define usbx_version
+ (lambda (m)
+  (index
+   (eval (execute m "!~{(usandbox (data \"cli\") \"version\")}~"))
+   "cli")))

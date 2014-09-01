@@ -1,0 +1,9 @@
+(load "testcase.pys")
+
+(define demo
+ (TestCase 
+  (Id "DEMO-001001") (Description "Demo testcase")
+  (Sample "file" "/bin/ls")
+  (Validators (ReportValidator (RiskLevel -1)))))
+
+(demo ddan_1)

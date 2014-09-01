@@ -1,0 +1,48 @@
+(and True True)
+
+(and True False)
+
+(and 2 1)
+
+(and 0 1)
+
+(or False True)
+
+(or False False)
+
+(or 0 1)
+
+(< 1 2)
+
+(<= 
+ (sum [data 1 2 3])
+ (+ 2 3))
+
+(=
+ (sum [data 1 2 3])
+ (+ 1 2 3))
+
+(>=
+ (sum [data 2 3 4])
+ (+ 1 2 3 4))
+
+(>
+ (sum [data 2 3 4 5])
+ (+ 1 2 3 4))
+
+(cond
+ ((and False True)
+  (+ "cond"  "first line"))
+ (else "cond last line"))
+
+(cond
+ ((and True True)
+  (+ "cond" " first line"))
+ (else "cond last line"))
+
+(cond
+ ((and False True)
+  (+ "cond" " first line"))
+ ((< (sum [data 1 2 3]) 10)
+  (+ "cond" " second line"))
+ (else "cond last line"))
